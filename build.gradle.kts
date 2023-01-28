@@ -9,6 +9,7 @@ plugins {
     id("io.github.frontrider.godle") version "0.20.0"
 }
 
+version = "0.1.0"
 repositories {
     mavenCentral()
 }
