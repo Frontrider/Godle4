@@ -1,0 +1,104 @@
+[gd_scene load_steps=8 format=3 uid="uid://d3yogtroteayq"]
+
+[ext_resource type="Script" path="res://addons/godle4/panel/godle_panel.gd" id="1_m2abd"]
+[ext_resource type="Texture2D" uid="uid://lc07dnc00qte" path="res://addons/godle4/panel/referesh.png" id="2_pbcrt"]
+[ext_resource type="Texture2D" uid="uid://dja4m5s43rqim" path="res://addons/godle4/panel/online.png" id="3_g8ddx"]
+[ext_resource type="Texture2D" uid="uid://dtl87j0ndrln" path="res://addons/godle4/panel/offline.png" id="4_neu45"]
+[ext_resource type="Texture2D" uid="uid://b3iy7revku15k" path="res://addons/godle4/panel/gradle-elephant-icon-white-primary.png" id="5_3cs48"]
+[ext_resource type="Script" path="res://addons/godle4/gradle_executor.gd" id="6_hk1ck"]
+
+[sub_resource type="GDScript" id="GDScript_d6ly6"]
+script/source = "@tool
+extends CheckBox
+const setting_name = \"gradle/offline_mode\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	if not ProjectSettings.has_setting(setting_name):
+		ProjectSettings.set(setting_name,false)
+		ProjectSettings.set_initial_value(setting_name,false)
+	button_pressed = ProjectSettings.get_setting(setting_name,false)
+	set_tooltip()
+	pass
+	
+func set_tooltip():
+	if button_pressed:
+		tooltip_text = \"offline mode: offline\"
+	else:
+		tooltip_text = \"offline mode: online\"
+	
+
+func _process(delta):
+	pass
+
+
+#Update the hints so the user can know what is happening.
+func _on_pressed():
+	ProjectSettings.set(setting_name,button_pressed)
+	ProjectSettings.save()
+	set_tooltip()
+"
+
+[node name="Gradle" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m2abd")
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Refresh" type="Button" parent="Panel/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("2_pbcrt")
+flat = true
+
+[node name="OfflineMode" type="CheckBox" parent="Panel/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "offline mode: online"
+theme_override_icons/checked = ExtResource("4_neu45")
+theme_override_icons/unchecked = ExtResource("3_g8ddx")
+expand_icon = true
+script = SubResource("GDScript_d6ly6")
+
+[node name="Control" type="Control" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_3cs48")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TaskTree" type="Tree" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GradleExecutor" type="Node" parent="."]
+script = ExtResource("6_hk1ck")
+
+[connection signal="pressed" from="Panel/HBoxContainer/Refresh" to="." method="refresh"]
+[connection signal="pressed" from="Panel/HBoxContainer/OfflineMode" to="Panel/HBoxContainer/OfflineMode" method="_on_pressed"]
+[connection signal="item_activated" from="ScrollContainer/TaskTree" to="." method="_on_task_tree_item_activated"]
+[connection signal="command_failed" from="GradleExecutor" to="." method="_on_gradle_executor_command_failed"]
+[connection signal="command_successful" from="GradleExecutor" to="." method="_on_gradle_executor_command_successful"]
