@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://b3iy7revku15k" path="res://addons/godle4/panel/gradle-elephant-icon-white-primary.png" id="5_3cs48"]
 [ext_resource type="Script" path="res://addons/godle4/gradle_executor.gd" id="6_hk1ck"]
 
-[sub_resource type="GDScript" id="GDScript_d6ly6"]
+[sub_resource type="GDScript" id="GDScript_xgovy"]
 script/source = "@tool
 extends CheckBox
 const setting_name = \"gradle/offline_mode\"
@@ -70,7 +70,7 @@ tooltip_text = "offline mode: online"
 theme_override_icons/checked = ExtResource("4_neu45")
 theme_override_icons/unchecked = ExtResource("3_g8ddx")
 expand_icon = true
-script = SubResource("GDScript_d6ly6")
+script = SubResource("GDScript_xgovy")
 
 [node name="Control" type="Control" parent="Panel/HBoxContainer"]
 layout_mode = 2

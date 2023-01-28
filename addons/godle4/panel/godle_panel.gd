@@ -68,7 +68,13 @@ func _on_task_tree_item_activated():
 
 func _on_gradle_executor_command_successful(arguments, output,identifier):
 	if(identifier == "init"):
-		var gradle_data = JSON.parse_string(output[0])
+		#This section attempts to fix some issues you can have with the other godle addons.
+		#They print text before the output of this addon.
+		#Splitting by the first {, then readding it fixes the problem.
+		var text = output[0] as String
+		var json = "{"+text.split("{",true,1)[1]
+		
+		var gradle_data = JSON.parse_string(json)
 		task_items.clear()
 		task_tree.clear()
 		setup_task_tree(null,gradle_data)
